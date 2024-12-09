@@ -2,7 +2,7 @@ from shodan import Shodan, APIError
 import time
 
 def get_vuln(CVE_CODE, API_KEY):
-    search_query = CVE_CODE
+    search_query = "vuln:" + CVE_CODE
     api = Shodan(API_KEY)
     
     # Scrape all pages
