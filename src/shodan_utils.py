@@ -43,7 +43,7 @@ def get_vuln(CVE_CODE, API_KEY, API_DELAY):
 
             page += 1
             
-            time.sleep(int(API_DELAY)) 
+            time.sleep(float(API_DELAY)) 
             print(f"[*] Waiting {str(API_DELAY)} seconds")
         except APIError as err:
             print(err)
