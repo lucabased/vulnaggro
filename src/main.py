@@ -34,4 +34,9 @@ print(f"\n[*] Searching for {cve_code_input} (this might take a while).")
 
 # CVE-2024-23897 
 from shodan_utils import get_vuln
-print(get_vuln(cve_code_input, SHODAN_API_KEY))
+shodan_results = get_vuln(
+    CVE_CODE=cve_code_input,
+    API_KEY=SHODAN_API_KEY,
+    API_DELAY=API_DELAY
+    )
+print(f"[*] Shodan results: {shodan_results}")

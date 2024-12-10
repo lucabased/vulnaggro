@@ -1,7 +1,7 @@
 from shodan import Shodan, APIError
 import time
-from main import API_DELAY
-def get_vuln(CVE_CODE, API_KEY):
+
+def get_vuln(CVE_CODE, API_KEY, API_DELAY):
     search_query = "vuln:" + CVE_CODE + ' country:"DE" port:8080'
     api = Shodan(API_KEY)
     
