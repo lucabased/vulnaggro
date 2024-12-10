@@ -1,8 +1,8 @@
 from shodan import Shodan, APIError
 import time
-
+from main import API_DELAY
 def get_vuln(CVE_CODE, API_KEY):
-    search_query = "vuln:" + CVE_CODE
+    search_query = "vuln:" + CVE_CODE + ' country:"DE" port:8080'
     api = Shodan(API_KEY)
     
     # Scrape all pages
@@ -11,7 +11,16 @@ def get_vuln(CVE_CODE, API_KEY):
     while True:
         try:
             results = api.search(search_query, page=page)
-            if page == 1: print(f"[*] Total possible results: {results['total']}")
+            if page == 1:
+                print(f"\n[*] Total possible results: {results['total']}")
+                print(f"[*] Total possible pages: {round(int(results['total']) / 100, 1)}")
+                print(f"[*] Estimated cost: {round(int(results['total']) / 100, 0)} credits")
+                continue_question = input("Continue with action? (y/n)  ")
+                if continue_question == "n":
+                    print(f"[!] Aborted execution")
+                    return
+                print("[*] Beginning to scrape \n")
+                
             print(f"[*] Page: {page}")
             
             # Page empty; break the loop
@@ -24,7 +33,7 @@ def get_vuln(CVE_CODE, API_KEY):
             
             all_results.extend(results)
             if not len(results['matches']) == 100:
-                print(f"[*] Retrieved {len(results['matches'])} results from page {page}...")
+                print(f"[*] Retrieved {len(int(results['matches']))} results from page {page}...")
             else:
                 print(f"[*] Retrieved all results from page {page}...")
             
@@ -34,12 +43,13 @@ def get_vuln(CVE_CODE, API_KEY):
 
             page += 1
             
-            # Don't fuck with the rate-limit!
-            time.sleep(1)
-        except API_KEY as err:
+            time.sleep(API_DELAY) 
+            print(f"[*] Waiting {API_DELAY} seconds")
+        except APIError as err:
+            print(err)
             print(f"[!] Shodan API Error: {err}")
             break
-    print(f"[*] Done browsing all pages for '{search_query}'...")
+    print(f"[*] Done browsing all pages for '{str(search_query).strip('vuln:')}'...")
     print(f"[*] Total results for '{search_query}': {len(all_results)} ...")
     return all_results
     
